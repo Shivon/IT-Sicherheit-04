@@ -1,6 +1,6 @@
 package kerberos;
 
-/* Simulation einer Kerberos-Session mit Zugriff auf einen Fileserver */
+// Simulation of Kerberos session with access on file server
 
 import java.util.*;
 
@@ -11,23 +11,22 @@ public class KerberosSim {
 	private Server myFileserver;
 
 	public void initKerberos(String userName, char[] password, String serverName, String tgsName) {
-		/* KDC initialisieren */
+		// init KDC
 		myKDC = new KDC(tgsName);
 
-		// Server initialisieren
+		// init server
 		myFileserver = new Server(serverName);
-		myFileserver.setupService(myKDC); // Schlüsselerzeugung und -austausch
+		// generate and exchange key
+		myFileserver.setupService(myKDC);
 
-		// User-Account und Client erzeugen
+		// create user account and client
 		myKDC.userRegistration(userName, password);
 		myClient = new Client(myKDC);
 	}
 
 	public char[] readPasswd(String userName) {
-		/*
-		 * Passworteingabe über modalen Dialog. Liefert ein Passwort oder null
-		 * bei Abbruch durch den Benutzer
-		 */
+		// enter password via modal dialog
+		// returns null when user cancels interaction
 		char[] password = null;
 		PasswordDialog pwDialog = new PasswordDialog(userName);
 		if (pwDialog.statusOK()) {
@@ -37,47 +36,43 @@ public class KerberosSim {
 	}
 
 	public static void main(String args[]) {
+		// simulation of user session: login and access to file server
 
-		/*
-		 * Simulation einer Benutzer-Session: Anmeldung und Zugriff auf
-		 * Fileserver
-		 */
-
-		// -------- Start Initialisierung des Systems ------------------
+		// -------- start init system ------------------
 		String userName = "axz467";
 		char[] password = { 'S', 'e', 'c', 'r', 'e', 't', '!' };
 		String serverName = "myFileserver";
 		String tgsName = "myTGS";
+		// TODO: this path is for Windows...
 		String filePath = "C:/Temp/ITS.txt";
 
 		KerberosSim thisSession = new KerberosSim();
 
-		// KDC + alle Server + Client initialisieren
+		// init KDC + all server + client
 		thisSession.initKerberos(userName, password, serverName, tgsName);
+		// -------- end init system ------------------
 
-		// -------- Ende Initialisierung des Systems ------------------
-
-		/* -------- Benutzersession simulieren ------ */
-		// Passwort vom Benutzer holen
-		System.out.println("Starte Login-Session für Benutzer: " + userName);
+		// -------- simulate user session --------
+		// get password of user
+		System.out.println("Start login session for user: " + userName);
 		password = thisSession.readPasswd(userName);
 		if (password != null) {
 
-			// Benutzeranmeldung beim KDC
+			// user login at KDC
 			boolean loginOK = thisSession.myClient.login(userName, password);
 
-			// Passwort im Hauptspeicher löschen (überschreiben)!!
+			// delete password from main memory (overwrite)!!
 			Arrays.fill(password, ' ');
 
 			if (!loginOK) {
-				System.out.println("Login fehlgeschlagen!");
+				System.out.println("Login failed!");
 			} else {
-				System.out.println("Login erfolgreich!\n");
+				System.out.println("Login successful!\n");
 
-				// Zugriff auf Fileserver
+				// access file server
 				boolean serviceOK = thisSession.myClient.showFile(thisSession.myFileserver, filePath);
 				if (!serviceOK) {
-					System.out.println("Zugriff auf Server " + serverName + " ist fehlgeschlagen!");
+					System.out.println("Access on server " + serverName + " failed!");
 				}
 			}
 		}
