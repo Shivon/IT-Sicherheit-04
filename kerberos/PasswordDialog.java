@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kerberos;
 
 import java.awt.*;
@@ -8,53 +5,44 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-/**
- * Zeige ein Fenster mit einem Passworteingabe-Feld als modalen Dialog
- * 
- */
+// show window with password entry field as modal dialog
 public class PasswordDialog extends JDialog {
 	private static final long serialVersionUID = 873795915516658285L;
 
 	private JPasswordField passwortField = null;
 	private boolean status = false;
 
-	/*
-	 * ----------------- Zugriffsmethoden auf die Ergebnisse
-	 * ----------------------------------------------------
-	 */
+	// ----------------- access to results -----------------
 	public boolean statusOK() {
-		/* Liefere den Status: OK = true, cancel = false */
+		// returns status: OK = true, cancel = false
 		return status;
 	}
 
 	public char[] getPassword() {
-		/* Liefere das Passwort (Array-Referenz) */
+		// returns password (array reference)
 		return passwortField.getPassword();
 	}
 
-	/*
-	 * ----------------- Konstruktor
-	 * ----------------------------------------------------
-	 */
+	// ----------------- constructors -----------------
 	public PasswordDialog(String userName) {
-		// Modalen Dialog über Parameter festlegen
+		// determine modal dialog via params
 		super((Frame) null, "HAW Department Informatik WP IT-Sicherheit", true);
 
 		String okLabel = "  OK  ";
-		String cancelLabel = "Abbruch";
+		String cancelLabel = "Cancel";
 
-		// Fenster-Parameter setzen
+		// set window params
 		setLocation(200, 100);
 		Container contentPanel = getContentPane();
 		contentPanel.setLayout(new BorderLayout(100, 20));
-		// Text-Anzeige
+		// display text
 		JLabel labelMessage1 = new JLabel("<html><body><font size=\"+1\">"
-				+ "<em>Bitte Passwort für " + userName
-				+ " eingeben: </em></font><br>" + "</body></html>",
+				+ "<em>Please enter password for " + userName
+				+ " : </em></font><br>" + "</body></html>",
 				SwingConstants.CENTER);
 		contentPanel.add(labelMessage1, BorderLayout.NORTH);
 
-		// Füllregionen links und rechts
+		// fill areas left and right
 		JLabel leftDist = new JLabel(" ");
 		contentPanel.add(leftDist, BorderLayout.WEST);
 		JLabel rightDist = new JLabel(" ");
@@ -62,14 +50,14 @@ public class PasswordDialog extends JDialog {
 
 		passwortField = new JPasswordField(15);
 
-		// passwortField auf Fenster verankern
+		// add passwortField to window
 		contentPanel.add(passwortField, BorderLayout.CENTER);
 
-		// Panel für die OK/Cancel-Buttons erzeugen
+		// generate panel for OK/Cancel-buttons
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout());
 
-		// OK-Button
+		// OK-button
 		JButton okButton = new JButton(okLabel);
 		okButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -79,7 +67,7 @@ public class PasswordDialog extends JDialog {
 		});
 		buttonPanel.add(okButton);
 
-		// Abbrechen-Button
+		// cancel-button
 		JButton cancelButton = new JButton(cancelLabel);
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -89,25 +77,24 @@ public class PasswordDialog extends JDialog {
 		});
 		buttonPanel.add(cancelButton);
 
-		// Buttons auf Fenster verankern
+		// add buttons to window
 		contentPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-		// Anzeige
+		// display
 		pack();
 		setVisible(true);
 	}
 
 	private void closeDialog() {
-		// Fenster schließen
+		// close window
 		setVisible(false);
 		dispose();
 	}
 
 	public static void main(String argv[]) throws Exception {
-		// Testmethode!
+		// test method!
 		PasswordDialog myClient = new PasswordDialog("Testuser");
 		System.out.println("Status: " + myClient.statusOK());
-		System.out.println("Passwort: " + new String(myClient.getPassword()));
+		System.out.println("Password: " + new String(myClient.getPassword()));
 	}
-
 }

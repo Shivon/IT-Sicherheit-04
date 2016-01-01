@@ -1,34 +1,25 @@
 package kerberos;
 
-/* Simulation einer Kerberos-Session mit Zugriff auf einen Fileserver
- /* Ticket-Klasse
- */
+// Simulation of Kerberos session with access on file server
+
 import java.util.*;
 
 public class Ticket extends Object {
-
-	private String myClientName; // Konstruktor-Parameter
-
-	private String myServerName; // Konstruktor-Parameter
-
-	private long myStartTime; // Konstruktor-Parameter
-
-	private long myEndTime; // Konstruktor-Parameter
-
-	private long mySessionKey; // Konstruktor-Parameter
-
-	// Geheimer Schlüssel, mit dem das Ticket (simuliert) verschlüsselt ist:
+	// constructor params
+	private String myClientName;
+	private String myServerName;
+	private long myStartTime;
+	private long myEndTime;
+	private long mySessionKey;
+	// secret key for encrypting ticket (simulated)
 	private long myTicketKey;
-
-	private boolean isEncryptedState; // Aktueller Zustand des Objekts
-
-	// Kalenderobjekt zur Zeitumrechnung (für Testausgaben)
+	// current  status of object
+	private boolean isEncryptedState;
+	// calendar object for time conversion (testing purpose)
 	private Calendar cal;
 
-	// Konstruktor
-	public Ticket(String clientName, String serverName, long startTime,
-			long endTime, long sessionKey) {
-
+	// constructor
+	public Ticket(String clientName, String serverName, long startTime, long endTime, long sessionKey) {
 		myClientName = clientName;
 		myServerName = serverName;
 		myStartTime = startTime;
@@ -37,50 +28,51 @@ public class Ticket extends Object {
 
 		myTicketKey = -1;
 		isEncryptedState = false;
-		cal = new GregorianCalendar(); // für Testausgaben
+		// for testing purpose
+		cal = new GregorianCalendar();
 	}
 
 	public String getClientName() {
 		if (isEncryptedState) {
-			printError("Zugriff auf verschlüsseltes Ticket (getClientName)");
+			printError("Access to encrypted ticket (getClientName)");
 		}
 		return myClientName;
 	}
 
 	public String getServerName() {
 		if (isEncryptedState) {
-			printError("Zugriff auf verschlüsseltes Ticket (getServerName)");
+			printError("Access to encrypted ticket (getServerName)");
 		}
 		return myServerName;
 	}
 
 	public long getStartTime() {
 		if (isEncryptedState) {
-			printError("Zugriff auf verschlüsseltes Ticket (getStartTime)");
+			printError("Access to encrypted ticket (getStartTime)");
 		}
 		return myStartTime;
 	}
 
 	public long getEndTime() {
 		if (isEncryptedState) {
-			printError("Zugriff auf verschlüsseltes Ticket (getEndTime)");
+			printError("Access to encrypted ticket (getEndTime)");
 		}
 		return myEndTime;
 	}
 
 	public long getSessionKey() {
 		if (isEncryptedState) {
-			printError("Zugriff auf verschlüsseltes Ticket (getSessionKey)");
+			printError("Access to encrypted ticket (getSessionKey)");
 		}
 		return mySessionKey;
 	}
 
 	public boolean encrypt(long key) {
-		// Ticket mit dem Key verschlüsseln.
-		// Falls das Ticket bereits verschlüsselt ist, wird false zurückgegeben.
+		// encrypt ticket with key
+		// returns false if ticket is already encrypted
 		boolean encOK = false;
 		if (isEncryptedState) {
-			printError("Ticket ist bereits verschlüsselt");
+			printError("Ticket already encrypted");
 		} else {
 			myTicketKey = key;
 			isEncryptedState = true;
@@ -90,16 +82,15 @@ public class Ticket extends Object {
 	}
 
 	public boolean decrypt(long key) {
-		// Ticket mit dem Key entschlüsseln.
-		// Falls der Key falsch ist oder
-		// falls das Ticket bereits entschlüsselt ist, wird false zurückgegeben.
+		// decrypt ticket with key
+		// returns false if key is wrong or ticket already decrypted
 		boolean decOK = false;
 		if (!isEncryptedState) {
-			printError("Ticket ist bereits entschlüsselt");
+			printError("Ticket already decrypted");
 		}
 		if (myTicketKey != key) {
-			printError("Ticket-Entschlüsselung mit key " + key
-					+ " ist fehlgeschlagen");
+			printError("Decrypting ticket with key " + key
+					+ " failed");
 		} else {
 			isEncryptedState = false;
 			decOK = true;
@@ -108,35 +99,32 @@ public class Ticket extends Object {
 	}
 
 	public boolean isEncrypted() {
-		// Aktuellen Zustand zurückgeben: verschlüsselt (true) / entschlüsselt
-		// (false)
+		// encrypted = true, decrypted = false
 		return isEncryptedState;
 	}
 
 	public void print() {
-		System.out.println("********* Ticket für " + myClientName + " / "
+		System.out.println("********* Ticket for " + myClientName + " / "
 				+ myServerName + " *******");
 		System.out.println("StartTime: " + getDateString(myStartTime)
 				+ " - EndTime: " + getDateString(myEndTime));
-		System.out.println("Session Key: " + mySessionKey);
-		System.out.println("Ticket Key: " + myTicketKey);
+		System.out.println("Session key: " + mySessionKey);
+		System.out.println("Ticket key: " + myTicketKey);
 		if (isEncryptedState) {
-			System.out.println("Ticket-Zustand: verschlüsselt (encrypted)!");
+			System.out.println("Ticket status: encrypted!");
 		} else {
-			System.out.println("Ticket-Zustand: entschlüsselt (decrypted)!");
+			System.out.println("Ticket status: decrypted!");
 		}
 	}
 
 	public void printError(String message) {
 		System.out.println("+++++++++++++++++++");
-		System.out.println("+++++++++++++++++++ Fehler +++++++++++++++++++ "
-				+ message + "! Ticket-Key: " + myTicketKey);
+		System.out.println("+++++++++++++++++++ error +++++++++++++++++++ " + message + "! Ticket key: " + myTicketKey);
 		System.out.println("+++++++++++++++++++");
 	}
 
 	private String getDateString(long time) {
-		// Umrechnung der Zeitangabe time (Millisek. seit 1.1.1970) in einen
-		// Datumsstring
+		// converting time in milliseconds (since 1.1.1970) into date string
 		String dateString;
 
 		cal.setTimeInMillis(time);

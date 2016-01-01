@@ -1,22 +1,20 @@
 package kerberos;
 
-/* Simulation einer Kerberos-Session mit Zugriff auf einen Fileserver
- /* Server-Klasse
- */
+// Simulation of Kerberos session with access on file server
 
 import java.util.*;
 import java.io.*;
 
 public class Server extends Object {
+	// 5 minutes in milliseconds
+	private final long fiveMinutesInMillis = 300000;
+	// constructor params
+	private String myName;
+	// saved at KDC registration
+	private KDC myKDC;
+	private long myKey;
 
-	private final long fiveMinutesInMillis = 300000; // 5 Minuten in
-														// Millisekunden
-
-	private String myName; // Konstruktor-Parameter
-	private KDC myKDC; // wird bei KDC-Registrierung gespeichert
-	private long myKey; // wird bei KDC-Registrierung gespeichert
-
-	// Konstruktor
+	// constructor
 	public Server(String name) {
 		myName = name;
 	}
@@ -26,12 +24,12 @@ public class Server extends Object {
 	}
 
 	public void setupService(KDC kdc) {
-		// Anmeldung des Servers beim KDC
+		// register server at KDC
 		myKDC = kdc;
 		myKey = myKDC.serverRegistration(myName);
 		System.out.println("Server " + myName
-				+ " erfolgreich registriert bei KDC " + myKDC.getName()
-				+ " mit ServerKey " + myKey);
+				+ " successfully registered at KDC " + myKDC.getName()
+				+ " with serverKey " + myKey);
 	}
 
 	public boolean requestService(Ticket srvTicket, Auth srvAuth,
@@ -39,22 +37,20 @@ public class Server extends Object {
 			/* ToDo */
 	}
 
-	/* *********** Services **************************** */
+	/* *********** services **************************** */
 
 	private boolean showFile(String filePath) {
-		/*
-		 * Angegebene Datei auf der Konsole ausgeben. Rückgabe: Status der
-		 * Operation
-		 */
+		// show specified file on terminal
+		// returns status of operation
 		String lineBuf = null;
 		File myFile = new File(filePath);
 		boolean status = false;
 
 		if (!myFile.exists()) {
-			System.out.println("Datei " + filePath + " existiert nicht!");
+			System.out.println("File " + filePath + " doesn't exist!");
 		} else {
 			try {
-				// Datei öffnen und zeilenweise lesen
+				// open file and read line by line
 				BufferedReader inFile = new BufferedReader(
 						new InputStreamReader(new FileInputStream(myFile)));
 				lineBuf = inFile.readLine();
@@ -65,22 +61,18 @@ public class Server extends Object {
 				inFile.close();
 				status = true;
 			} catch (IOException ex) {
-				System.out.println("Fehler beim Lesen der Datei " + filePath
-						+ ex);
+				System.out.println("Error while reading file " + filePath + ex);
 			}
 		}
 		return status;
 	}
 
-	/* *********** Hilfsmethoden **************************** */
+	/* *********** helping methods **************************** */
 
 	private boolean timeValid(long lowerBound, long upperBound) {
-		/*
-		 * Wenn die aktuelle Zeit innerhalb der übergebenen Zeitgrenzen liegt,
-		 * wird true zurückgegeben
-		 */
-
-		long currentTime = (new Date()).getTime(); // Anzahl mSek. seit 1.1.1970
+		// returns true if current time is within given time boundaries
+		// milliseconds since 1.1.1970
+		long currentTime = (new Date()).getTime();
 		if (currentTime >= lowerBound && currentTime <= upperBound) {
 			return true;
 		} else {
@@ -91,11 +83,9 @@ public class Server extends Object {
 	}
 
 	boolean timeFresh(long testTime) {
-		/*
-		 * Wenn die übergebene Zeit nicht mehr als 5 Minuten von der aktuellen
-		 * Zeit abweicht, wird true zurückgegeben
-		 */
-		long currentTime = (new Date()).getTime(); // Anzahl mSek. seit 1.1.1970
+		// returns true if given time doesn't differ more than 5 minutes from current time
+		// milliseconds since 1.1.1970
+		long currentTime = (new Date()).getTime();
 		if (Math.abs(currentTime - testTime) < fiveMinutesInMillis) {
 			return true;
 		} else {

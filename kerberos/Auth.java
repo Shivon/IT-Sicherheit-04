@@ -77,8 +77,7 @@ public class Auth extends Object {
 
 	public void printError(String message) {
 		System.out.println("+++++++++++++++++++");
-		System.out.println("+++++++++++++++++++ Error +++++++++++++++++++ "
-				+ message + "! Authentication key: " + myAuthKey);
+		System.out.println("+++++++++++++++++++ Error +++++++++++++++++++ " + message + "! Authentication key: " + myAuthKey);
 		System.out.println("+++++++++++++++++++");
 	}
 
