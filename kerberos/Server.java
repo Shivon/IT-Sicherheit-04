@@ -32,15 +32,42 @@ public class Server extends Object {
 				+ " with serverKey " + myKey);
 	}
 
-	public boolean requestService(Ticket srvTicket, Auth srvAuth, String command, String parameter) {
+	public boolean requestService(Ticket serverTicket, Auth serverAuth, String command, String parameter) {
 		// catch if another service than "showFile" is called
 		if (!command.equals("showFile")) {
-			System.out.println("Command not know - available: showFile");
+			System.out.println("Command not known - available: showFile");
 			return false;
 		}
 
+		// decrypt
+		if (!serverTicket.decrypt(myKey)) {
+			serverTicket.printError("Server key invalid.");
+			return false;
+		}
 
-		return true;
+		if (!serverAuth.decrypt(serverTicket.getSessionKey())) {
+			serverAuth.printError("Session key invalid.");
+			return false;
+		}
+
+		// authenticate
+		if (!serverAuth.getClientName().equals(serverTicket.getClientName())) {
+			serverAuth.printError("Client name invalid in authentication or ticket.");
+			return false;
+		}
+
+		if (!timeFresh(serverAuth.getCurrentTime())) {
+			serverAuth.printError("Time invalid.");
+			return false;
+		}
+
+		if (!timeValid(serverTicket.getStartTime(), serverTicket.getEndTime())) {
+			serverTicket.printError("Time invalid.");
+			return false;
+		}
+
+		// write file to terminal
+		return showFile(parameter);
 	}
 
 	/* *********** services **************************** */
