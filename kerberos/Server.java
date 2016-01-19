@@ -32,8 +32,7 @@ public class Server extends Object {
 				+ " with serverKey " + myKey);
 	}
 
-	public boolean requestService(Ticket srvTicket, Auth srvAuth,
-			String command, String parameter) {
+	public boolean requestService(Ticket srvTicket, Auth srvAuth, String command, String parameter) {
 			/* ToDo */
 	}
 
