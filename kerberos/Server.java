@@ -33,7 +33,14 @@ public class Server extends Object {
 	}
 
 	public boolean requestService(Ticket srvTicket, Auth srvAuth, String command, String parameter) {
-			/* ToDo */
+		// catch if another service than "showFile" is called
+		if (!command.equals("showFile")) {
+			System.out.println("Command not know - available: showFile");
+			return false;
+		}
+
+
+		return true;
 	}
 
 	/* *********** services **************************** */

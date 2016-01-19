@@ -146,7 +146,7 @@ public class KDC extends Object {
 
 		// generate and encrypt serverTicketResponse
 		TicketResponse serverTicketResponse = new TicketResponse(serverSessionKey, nonce, serverTicket);
-		serverTicketResponse.encrypt(serverSessionKey);
+		serverTicketResponse.encrypt(tgsSessionKey);
 		return serverTicketResponse;
 	}
 

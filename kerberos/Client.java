@@ -61,6 +61,11 @@ public class Client extends Object {
 			return false;
 		}
 
+		if (!serverTicketResponse.decrypt(tgsSessionKey)) {
+			serverTicketResponse.printError("Invalid session key.");
+			return false;
+		}
+
 		if (nonce != serverTicketResponse.getNonce()) {
 			serverTicketResponse.printError("Invalid nonce.");
 			return false;
