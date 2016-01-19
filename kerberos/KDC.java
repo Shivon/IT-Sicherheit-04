@@ -93,7 +93,61 @@ public class KDC extends Object {
 	/* *********** TGS module: Server - ticket request **************************** */
 
 	public TicketResponse requestServerTicket(Ticket tgsTicket, Auth tgsAuth, String serverName, long nonce) {
-				/* ToDo */
+		// handle requirements of server ticket
+		// returns TicketResponse for request
+
+		// decrypt
+		if (!tgsTicket.decrypt(tgsKey)) {
+			tgsTicket.printError("TGS key invalid.");
+			return null;
+		}
+
+		// not necessary in this implementation but conceptually the correct way
+		tgsSessionKey = tgsTicket.getSessionKey();
+
+		if (!tgsAuth.decrypt(tgsSessionKey)) {
+			tgsAuth.printError("TGS session key invalid.");
+			return null;
+		}
+
+		// authenticate
+		if (!tgsAuth.getClientName().equals(tgsTicket.getClientName())) {
+			tgsAuth.printError("Client invalid in authentication or TGS ticket.");
+			return null;
+		}
+
+		if (!timeFresh(tgsAuth.getCurrentTime())) {
+			tgsAuth.printError("Authentication time invalid.");
+			return null;
+		}
+
+		if (!timeValid(tgsTicket.getStartTime(), tgsTicket.getEndTime())) {
+			tgsTicket.printError("TGS ticket invalid.");
+			return null;
+		}
+
+		// assemble server response
+		this.serverSessionKey = generateSimpleKey();
+		long currentTime = System.currentTimeMillis();
+		Ticket serverTicket = new Ticket(
+				tgsAuth.getClientName(),
+				serverName,
+				currentTime,
+				currentTime + fiveMinutesInMillis,
+				serverSessionKey
+		);
+		serverTicket.encrypt(serverKey);
+
+		// search for server in data base
+		if (!serverName.equals(this.serverName)) {
+			System.out.println("Server name not known.");
+			return null;
+		}
+
+		// generate and encrypt serverTicketResponse
+		TicketResponse serverTicketResponse = new TicketResponse(serverSessionKey, nonce, serverTicket);
+		serverTicketResponse.encrypt(serverSessionKey);
+		return serverTicketResponse;
 	}
 
 	/* *********** helping methods **************************** */

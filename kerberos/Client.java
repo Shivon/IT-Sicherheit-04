@@ -10,7 +10,6 @@ public class Client extends Object {
 	// needs to be saved at login
 	private String currentUser;
 	private Ticket tgsTicket = null;
-	private String tgsServer;
 	// K(C,TGS)
 	private long tgsSessionKey;
 
@@ -21,11 +20,11 @@ public class Client extends Object {
 
 	public boolean login(String userName, char[] password) {
 		// get tgsTicketResponse
-		this.tgsServer = "myTGS";
+		String tgsServer = "myTGS";
 		long nonce = generateNonce();
 		TicketResponse tgsTicketResponse = myKDC.requestTGSTicket(userName, tgsServer, nonce);
 		if (tgsTicketResponse == null) {
-			tgsTicketResponse.printError("Invalid login.");
+			System.out.println("Invalid login.");
 			return false;
 		}
 		this.currentUser = userName;
@@ -58,7 +57,7 @@ public class Client extends Object {
 		TicketResponse serverTicketResponse = myKDC.requestServerTicket(tgsTicket, auth, fileServer.getName(), nonce);
 
 		if (serverTicketResponse == null) {
-			serverTicketResponse.printError("Invalid login.");
+			System.out.println("Invalid login.");
 			return false;
 		}
 
