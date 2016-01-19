@@ -10,6 +10,7 @@ public class Client extends Object {
 	// needs to be saved at login
 	private String currentUser;
 	private Ticket tgsTicket = null;
+	private String tgsServer;
 	// K(C,TGS)
 	private long tgsSessionKey;
 
@@ -19,8 +20,32 @@ public class Client extends Object {
 	}
 
 	public boolean login(String userName, char[] password) {
-		/* ToDo */
-		return false;
+		// Get ticketResponse
+		this.tgsServer = "myTGS";
+		long nonce = generateNonce();
+		TicketResponse ticketResponse = myKDC.requestTGSTicket(userName, tgsServer, nonce);
+		if (ticketResponse == null) {
+			System.out.println("Invalid login.");
+			return false;
+		}
+		this.currentUser = userName;
+
+		// "decrypt"
+		long decryptKey = generateSimpleKeyFromPassword(password);
+		if (!ticketResponse.decrypt(decryptKey)) {
+			System.out.println("Decrypting with key " + decryptKey + " failed.");
+			return false;
+		}
+
+		// check for replay attack
+		if (nonce != ticketResponse.getNonce()) {
+			System.out.println("Nonce invalid.");
+			return false;
+		}
+		
+		this.tgsTicket = ticketResponse.getResponseTicket();
+		this.tgsSessionKey = ticketResponse.getSessionKey();
+		return true;
 	}
 
 	public boolean showFile(Server fileServer, String filePath) {

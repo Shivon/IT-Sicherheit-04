@@ -64,8 +64,7 @@ public class TicketResponse extends Object {
 			printError("TicketResponse is already decrypted");
 		}
 		if (myResponseKey != key) {
-			printError("Decrypting ticketResponse with key " + key
-					+ " failed");
+			printError("Decrypting ticketResponse with key " + key + " failed");
 		} else {
 			isEncryptedState = false;
 			decOK = true;
