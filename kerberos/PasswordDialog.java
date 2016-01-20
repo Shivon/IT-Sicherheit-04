@@ -91,7 +91,7 @@ public class PasswordDialog extends JDialog {
 		dispose();
 	}
 
-	public static void main(String argv[]) throws Exception {
+	public static void main(String[] args) throws Exception {
 		// test method!
 		PasswordDialog myClient = new PasswordDialog("Testuser");
 		System.out.println("Status: " + myClient.statusOK());

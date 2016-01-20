@@ -35,7 +35,7 @@ public class KerberosSim {
 		return password;
 	}
 
-	public static void main(String args[]) {
+	public static void main(String[] args) {
 		// simulation of user session: login and access to file server
 
 		// -------- start init system ------------------
@@ -45,7 +45,7 @@ public class KerberosSim {
 		String tgsName = "myTGS";
 		// TODO: this path is for Windows... look for solution for switching windows/ linux
 		// String filePath = "C:/Temp/ITS.txt";
-		String filePath = "~/projects/IT-Sicherheit-04/ITS.txt";
+		String filePath = "../test.txt";
 
 		KerberosSim thisSession = new KerberosSim();
 
