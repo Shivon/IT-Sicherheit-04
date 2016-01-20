@@ -19,12 +19,8 @@ public class KDC extends Object {
 	private String serverName;
 	// K(S)
 	private long serverKey;
-	// K(C,S)
-	private long serverSessionKey;
 	// K(TGS)
 	private long tgsKey;
-	// K(C,TGS)
-	private long tgsSessionKey;
 
 	// constructor
 	public KDC(String name) {
@@ -71,7 +67,7 @@ public class KDC extends Object {
 		// search for username and password in data base
 		if (userName.equals(user) && tgsServerName.equals(tgsName)) {
 			// generate new session key for Client and TGS
-			tgsSessionKey = generateSimpleKey();
+			long tgsSessionKey = generateSimpleKey();
 			// milliseconds since 1.1.1970
 			currentTime = (new Date()).getTime();
 
@@ -102,9 +98,7 @@ public class KDC extends Object {
 			return null;
 		}
 
-		// not necessary in this implementation but conceptually the correct way
-		tgsSessionKey = tgsTicket.getSessionKey();
-
+		long tgsSessionKey = tgsTicket.getSessionKey();
 		if (!tgsAuth.decrypt(tgsSessionKey)) {
 			tgsAuth.printError("TGS session key invalid.");
 			return null;
@@ -127,7 +121,7 @@ public class KDC extends Object {
 		}
 
 		// assemble server response
-		this.serverSessionKey = generateSimpleKey();
+		long serverSessionKey = generateSimpleKey();
 		long currentTime = System.currentTimeMillis();
 		Ticket serverTicket = new Ticket(
 				tgsAuth.getClientName(),
