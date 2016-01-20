@@ -45,7 +45,7 @@ public class KerberosSim {
 		String tgsName = "myTGS";
 		// TODO: this path is for Windows... look for solution for switching windows/ linux
 		// String filePath = "C:/Temp/ITS.txt";
-		String filePath = "../test.txt";
+		String filePath = "~/projects/IT-Sicherheit-04/test.txt";
 
 		KerberosSim thisSession = new KerberosSim();
 
