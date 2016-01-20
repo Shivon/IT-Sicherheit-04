@@ -33,6 +33,9 @@ public class Server extends Object {
 	}
 
 	public boolean requestService(Ticket serverTicket, Auth serverAuth, String command, String parameter) {
+		serverTicket.print();
+		serverAuth.print();
+
 		// catch if another service than "showFile" is called
 		if (!command.equals("showFile")) {
 			System.out.println("Command not known - available: showFile");
@@ -65,6 +68,9 @@ public class Server extends Object {
 			serverTicket.printError("Time invalid.");
 			return false;
 		}
+
+		serverTicket.print();
+		serverAuth.print();
 
 		// write file to terminal
 		return showFile(parameter);
